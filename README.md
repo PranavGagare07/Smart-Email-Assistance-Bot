@@ -42,7 +42,6 @@ Whether it's a formal business email, a friendly follow-up, or a casual message,
 
 - HTML5
 - CSS3
-- JavaScript
 
 ## Backend
 
@@ -259,17 +258,6 @@ Contributions are welcome!
 3. Commit your changes
 4. Push the branch
 5. Open a Pull Request
-
----
-
-# 👩‍💻 Author
-
-**Dnyaneshwari Kadam**
-
-- 💼 Software Developer
-- ☕ Java & Spring Boot Developer
-- 🤖 AI Application Enthusiast
-- 📧 Passionate about Intelligent Automation
 
 ---
 
