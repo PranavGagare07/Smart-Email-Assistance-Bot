@@ -173,31 +173,6 @@ mvn spring-boot:run
 
 ```
 http://localhost:8080
-```
-
----
-
-# 📸 Screenshots
-
-> Add screenshots of your application here.
-
-### Home Page
-
-```
-screenshots/home.png
-```
-
-### Email Generation
-
-```
-screenshots/generate.png
-```
-
-### Generated Output
-
-```
-screenshots/output.png
-```
 
 ---
 
