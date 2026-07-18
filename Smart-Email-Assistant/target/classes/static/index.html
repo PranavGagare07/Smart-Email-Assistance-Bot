@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Email Assistant</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 { 
+            color: #333; 
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 600;
+            color: #333;
+        }
+        input, select, textarea, button { 
+            width: 100%; 
+            padding: 12px; 
+            margin-bottom: 15px; 
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        button { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            border: none; 
+            padding: 15px; 
+            cursor: pointer; 
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result { 
+            margin-top: 30px; 
+            padding: 20px; 
+            background: #f8f9fa; 
+            border-radius: 8px; 
+            border-left: 4px solid #667eea;
+            display: none;
+        }
+        .error {
+            background: #ffe6e6;
+            border-left: 4px solid #ff4444;
+            color: #d63031;
+        }
+        .quick-examples {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .example-btn {
+            background: #f8f9fa;
+            border: 2px solid #e1e5e9;
+            color: #333;
+            padding: 10px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .copy-btn:hover {
+            background: #218838;
+        }
+        .copy-btn.copied {
+            background: #6c757d;
+        }
+        .email-content {
+            background: white;
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e5e9;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 15px;
+            max-height: 500px;
+            overflow-y: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .email-content pre {
+            margin: 0;
+            font-family: inherit;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
+        }
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            .result-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            .copy-btn {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📧 Smart Email Assistant</h1>
+        <p class="subtitle">Generate professional emails in seconds with AI</p>
+        
+        <div class="form-group">
+            <label for="topic">✏️ What do you want to write about?</label>
+            <textarea id="topic" rows="3" placeholder="Request a meeting to discuss the Q3 project timeline, deliverables, and resource allocation for the upcoming quarter."></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="tone">🎭 Select Tone:</label>
+            <select id="tone">
+                <option value="formal">Formal</option>
+                <option value="professional">Professional</option>
+                <option value="casual">Casual</option>
+                <option value="friendly">Friendly</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="recipient">👤 Recipient:</label>
+            <input type="text" id="recipient" placeholder="Project Manager">
+        </div>
+        
+        <div class="form-group">
+            <label for="subject">📋 Subject Suggestion:</label>
+            <input type="text" id="subject" placeholder="Q3 Project Planning Meeting">
+        </div>
+        
+        <button onclick="generateEmail()" id="generateBtn">🚀 Generate Email</button>
+        
+        <div class="quick-examples">
+            <div class="example-btn" onclick="loadExample('Meeting Request')">Meeting Request</div>
+            <div class="example-btn" onclick="loadExample('Follow-up Email')">Follow-up Email</div>
+            <div class="example-btn" onclick="loadExample('Thank You Note')">Thank You Note</div>
+            <div class="example-btn" onclick="loadExample('Project Update')">Project Update</div>
+        </div>
+        
+        <div id="result" class="result">
+            <div class="result-header">
+                <h3 style="margin: 0;">Generated Email</h3>
+                <button class="copy-btn" onclick="copyToClipboard()" id="copyBtn">📋 Copy Email</button>
+            </div>
+            <div class="email-content" id="emailOutput"></div>
+        </div>
+
+        <div class="footer">
+            Powered by Google Gemini AI • Smart Email Assistant v1.0
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.origin + '/api';
+
+        function loadExample(type) {
+            const examples = {
+                'Meeting Request': {
+                    topic: 'Request a meeting to discuss the Q3 project timeline, deliverables, and resource allocation for the upcoming quarter. Please include specific dates and required attendees.',
+                    tone: 'formal',
+                    recipient: 'Project Manager',
+                    subject: 'Q3 Project Planning Meeting'
+                },
+                'Follow-up Email': {
+                    topic: 'Follow up on our recent conversation about the marketing campaign and provide additional details about the implementation timeline, budget considerations, and expected outcomes.',
+                    tone: 'professional',
+                    recipient: 'Marketing Team',
+                    subject: 'Follow-up: Marketing Campaign Discussion'
+                },
+                'Thank You Note': {
+                    topic: 'Express sincere gratitude for the excellent collaboration on the recent project and acknowledge the team exceptional hard work, dedication, and innovative solutions that led to our success.',
+                    tone: 'friendly',
+                    recipient: 'Project Team',
+                    subject: 'Thank You for Your Outstanding Work!'
+                },
+                'Project Update': {
+                    topic: 'Provide a comprehensive progress update on the website redesign project, including completed milestones, current challenges, resource requirements, and next steps with timelines.',
+                    tone: 'professional',
+                    recipient: 'Stakeholders',
+                    subject: 'Project Update: Website Redesign Progress'
+                }
+            };
+
+            const example = examples[type];
+            if (example) {
+                document.getElementById('topic').value = example.topic;
+                document.getElementById('tone').value = example.tone;
+                document.getElementById('recipient').value = example.recipient;
+                document.getElementById('subject').value = example.subject;
+            }
+        }
+
+        async function generateEmail() {
+            const topic = document.getElementById('topic').value;
+            const tone = document.getElementById('tone').value;
+            const recipient = document.getElementById('recipient').value;
+            const subject = document.getElementById('subject').value;
+            const generateBtn = document.getElementById('generateBtn');
+            const resultDiv = document.getElementById('result');
+            const emailOutput = document.getElementById('emailOutput');
+
+            if (!topic || !recipient) {
+                alert('Please fill in the topic and recipient fields');
+                return;
+            }
+
+            // Reset UI
+            resultDiv.style.display = 'none';
+            resultDiv.className = 'result';
+            generateBtn.disabled = true;
+            generateBtn.textContent = '⏳ Generating...';
+            emailOutput.innerHTML = '<div class="loading">Generating your professional email... This may take a few seconds.</div>';
+            resultDiv.style.display = 'block';
+
+            try {
+                console.log('Sending request with data:', { topic, tone, recipient, subject });
+                
+                const response = await fetch(API_BASE_URL + '/generate-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        topic: topic,
+                        tone: tone,
+                        recipient: recipient,
+                        subject: subject,
+                        purpose: topic,
+                        subjectHint: subject
+                    })
+                });
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`Server returned ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                // Handle different response formats
+                const emailText = data.generatedEmail || data.email || 'No email content received';
+                emailOutput.innerHTML = `<pre>${emailText}</pre>`;
+                resultDiv.style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                emailOutput.innerHTML = `<div style="color: #d63031;">Error: ${error.message}</div>`;
+                resultDiv.className = 'result error';
+                resultDiv.style.display = 'block';
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = '🚀 Generate Email';
+            }
+        }
+
+        function copyToClipboard() {
+            const emailOutput = document.getElementById('emailOutput');
+            const copyBtn = document.getElementById('copyBtn');
+            const emailText = emailOutput.innerText || emailOutput.textContent;
+            
+            navigator.clipboard.writeText(emailText).then(() => {
+                // Show success feedback
+                copyBtn.textContent = '✅ Copied!';
+                copyBtn.classList.add('copied');
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    copyBtn.textContent = '📋 Copy Email';
+                    copyBtn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy email to clipboard. Please select and copy manually.');
+            });
+        }
+
+        // Test API connection on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch(API_BASE_URL + '/health');
+                if (response.ok) {
+                    console.log('API connection successful');
+                }
+            } catch (error) {
+                console.warn('API health check failed:', error);
+            }
+        });
+    </script>
+</body>
+</html>

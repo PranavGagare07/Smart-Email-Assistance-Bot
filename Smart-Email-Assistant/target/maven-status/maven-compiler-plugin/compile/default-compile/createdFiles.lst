@@ -1,0 +1,8 @@
+com\example\smartemailassistant\config\WebConfig.class
+com\example\smartemailassistant\config\WebConfig$1.class
+com\example\smartemailassistant\model\EmailResponse.class
+com\example\smartemailassistant\service\GeminiEmailService.class
+com\example\smartemailassistant\controller\EmailController.class
+com\example\smartemailassistant\model\EmailRequest.class
+com\example\smartemailassistant\SmartEmailAssistantApplication.class
+com\example\smartemailassistant\controller\HealthController.class
